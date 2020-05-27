@@ -1,7 +1,7 @@
 # Учебный проект «Код и Магия» [![Build status][travis-image]][travis-url]
 
 * Студент: [Amir Farkhadov](https://up.htmlacademy.ru/javascript/20/user/853355).
-* Наставник: `Неизвестно`.
+* Наставник: [Владислав Ермолин](https://github.com/electrovladyslav).
 
 ---
 
