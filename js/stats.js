@@ -10,7 +10,6 @@ var FONT_GAP = 15;
 var TEXT_HEIGHT = 15;
 var BAR_WIDTH = 40;
 var barHeight = -(150);
-var barColor = ['hsl(240, 100%, 15%)', 'hsl(240, 100%, 50%)', 'hsl(240, 100%, 60%)', 'hsl(240, 100%, 80%)'];
 
 
 var renderCloud = function (ctx, x, y, color) {
@@ -34,6 +33,7 @@ window.renderStatistics = function (ctx, players, times) {
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
 
   ctx.fillStyle = '#000';
+  ctx.font = '16px PT Mono';
   var maxTime = getMaxElement(times);
 
   ctx.fillText('Ура вы победили!', CLOUD_X + GAP, CLOUD_Y + GAP + FONT_GAP);
@@ -45,7 +45,8 @@ window.renderStatistics = function (ctx, players, times) {
     if (players[i] === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
-      ctx.fillStyle = barColor[i];
+      var hslColor = 'hsl(' + 240 + ',' + (30 + 50 * Math.round(Math.random()) + '%,') + (50 + 30 * Math.random()) + '%)';
+      ctx.fillStyle = hslColor;
     }
     ctx.fillRect(CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i, (CLOUD_HEIGHT - GAP - TEXT_HEIGHT), BAR_WIDTH, (barHeight * times[i]) / maxTime);
     ctx.fillStyle = 'black';
