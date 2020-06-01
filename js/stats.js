@@ -32,9 +32,9 @@
     return maxElement;
   };
 
-  var hslColorGenerator = function (Hue, SaturationMin, SaturationMax, LightnessMin, LightnessMax) {
-    var hslColor = 'hsl(' + Hue + ',' + (SaturationMin + SaturationMax * Math.round(Math.random()) + '%,')
-     + (LightnessMin + LightnessMax * Math.random()) + '%)';
+  var hslColorGenerator = function (Hue, SaturationMin, SaturationRange, LightnessMin, LightnessRange) {
+    var hslColor = 'hsl(' + Hue + ',' + (SaturationMin + SaturationRange * Math.round(Math.random()) + '%,')
+     + (LightnessMin + LightnessRange * Math.random()) + '%)';
     return hslColor;
   };
 
