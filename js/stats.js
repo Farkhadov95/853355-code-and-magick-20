@@ -32,8 +32,8 @@
     return maxElement;
   };
 
-  var hslColorGenerator = function (Hue, SaturationMin, SaturationRange, LightnessMin, LightnessRange) {
-    var hslColor = 'hsl(' + Hue + ',' + (SaturationMin + SaturationRange * Math.round(Math.random()) + '%,')
+  var generateBlue = function (SaturationMin, SaturationRange, LightnessMin, LightnessRange) {
+    var hslColor = 'hsl(240,' + (SaturationMin + SaturationRange * Math.round(Math.random()) + '%,')
      + (LightnessMin + LightnessRange * Math.random()) + '%)';
     return hslColor;
   };
@@ -51,15 +51,27 @@
 
 
     for (var i = 0; i < players.length; i++) {
-      ctx.fillText(players[i], CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i, CLOUD_HEIGHT - GAP);
+      ctx.fillText(
+          players[i],
+          CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i,
+          CLOUD_HEIGHT - GAP
+      );
       if (players[i] === 'Вы') {
         ctx.fillStyle = PERSONAL_COLOR;
       } else {
-        ctx.fillStyle = hslColorGenerator(240, 30, 50, 50, 30);
+        ctx.fillStyle = generateBlue(30, 50, 50, 30);
       }
-      ctx.fillRect(CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i, (CLOUD_HEIGHT - GAP - TEXT_HEIGHT), BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime);
+      ctx.fillRect(
+          CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i,
+          (CLOUD_HEIGHT - GAP - TEXT_HEIGHT),
+          BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime
+      );
       ctx.fillStyle = MAIN_COLOR;
-      ctx.fillText(Math.round(times[i]), CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i, CLOUD_HEIGHT - GAP - TEXT_HEIGHT - FONT_GAP + (BAR_HEIGHT * times[i]) / maxTime);
+      ctx.fillText(
+          Math.round(times[i]),
+          CLOUD_X + GAP_X + (BAR_WIDTH + GAP_X) * i,
+          CLOUD_HEIGHT - GAP - TEXT_HEIGHT - FONT_GAP + (BAR_HEIGHT * times[i]) / maxTime
+      );
     }
   };
 })();
