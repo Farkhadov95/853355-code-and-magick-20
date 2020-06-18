@@ -183,33 +183,7 @@
   </div>
 </template>
 
-<script>
-  var fireballSize = 22;
 
-  function getFireballSpeed(isWindFromLeft) {
-    if (isWindFromLeft) {
-      return 5;
-    }
-    return 2;
-  }
-
-  var wizardSpeed = 3;
-  var wizardWidth = 70;
-
-  function getWizardHeight () {
-    return 1.337 * wizardWidth;
-  }
-
-  function getWizardX (gameFieldWidth) {
-    return (gameFieldWidth - wizardWidth) / 2;
-  }
-
-  function getWizardY (gameFieldHeight) {
-    return gameFieldHeight / 3;
-  }
-
-
-</script>
 <script src="js/renderWiz.js"></script>
 <script src="js/colorizeWiz.js"></script>
 <script src="js/randomElement.js"></script>
@@ -217,6 +191,7 @@
 <script src="js/move.js"></script>
 <script src="js/setup.js"></script>
 <script src="js/dialog.js"></script>
+<script src="js/editWiz.js"></script>
 
 <script src="js/stats.js"></script>
 <script src="js/game.js"></script>
