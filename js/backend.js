@@ -2,24 +2,65 @@
 (function () {
 
   var MAX_SIMILAR_WIZARD_COUNT = 4;
+  window.TIMEOUT_IN_MS = 10000;
+  window.URL = 'https://javascript.pages.academy/code-and-magick/data';
+  window.URL_UP = 'https://javascript.pages.academy/code-and-magick';
+
   var userDialog = document.querySelector('.setup');
   var similarListElement = userDialog.querySelector('.setup-similar-list');
-  var URL = 'https://javascript.pages.academy/code-and-magick/data';
-  var TIMEOUT_IN_MS = 10000;
   var form = userDialog.querySelector('.setup-wizard-form');
-  var URL_UP = 'https://javascript.pages.academy/code-and-magick';
-  var StatusCode = {
+  window.StatusCode = {
     OK: 200
+  };
+
+  window.backend = {
+    load: function (onLoad, onError) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status === window.StatusCode.OK) {
+          onLoad(xhr.response);
+        } else {
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }
+      });
+      xhr.addEventListener('error', function () {
+        onError('Произошла ошибка соединения');
+      });
+      xhr.addEventListener('timeout', function () {
+        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      });
+
+      xhr.timeout = window.TIMEOUT_IN_MS;
+
+      xhr.open('GET', window.URL);
+      xhr.send();
+    },
+    save: function (data, onLoad, onError) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status === window.StatusCode.OK) {
+          onLoad(xhr.response);
+        } else {
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }
+      });
+
+      xhr.open('POST', window.URL_UP);
+      xhr.send(data);
+    }
   };
 
   var successHandler = function (wizards) {
     var fragment = document.createDocumentFragment();
-
     for (var i = 0; i < MAX_SIMILAR_WIZARD_COUNT; i++) {
-      fragment.appendChild(window.renderWizard(wizards[i]));
+      var randomWiz = window.getRandomElement(wizards);
+      fragment.appendChild(window.renderWizard(randomWiz));
     }
     similarListElement.appendChild(fragment);
-
     userDialog.querySelector('.setup-similar').classList.remove('hidden');
   };
 
@@ -41,61 +82,16 @@
     });
   };
 
-  // ------------------------ Load Data--------------------------------
-
-  window.load = function (onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === StatusCode.OK) {
-        onLoad(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-    xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
-
-    xhr.timeout = TIMEOUT_IN_MS;
-
-    xhr.open('GET', URL);
-    xhr.send();
-  };
-
-  // ------------------------ save - upload ------------------------
-
-  window.save = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === StatusCode.OK) {
-        onLoad(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-
-    xhr.open('POST', URL_UP);
-    xhr.send(data);
-  };
-
-  // -------------------- submit ----------------------------
   var submitSuccess = function () {
     userDialog.classList.add('hidden');
   };
 
   var submitHandler = function (evt) {
-    window.save(new FormData(form), submitSuccess, errorHandler);
+    window.backend.save(new FormData(form), submitSuccess, errorHandler);
     evt.preventDefault();
   };
-  form.addEventListener('submit', submitHandler);
 
-  // --------------------------------------------
-  window.load(successHandler, errorHandler);
+  form.addEventListener('submit', submitHandler);
+  window.backend.load(successHandler, errorHandler);
 })();
+
