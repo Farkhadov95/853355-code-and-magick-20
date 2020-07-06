@@ -1,15 +1,13 @@
 'use strict';
 (function () {
 
-  var MAX_SIMILAR_WIZARD_COUNT = 4;
-  window.TIMEOUT_IN_MS = 10000;
-  window.URL = 'https://javascript.pages.academy/code-and-magick/data';
-  window.URL_UP = 'https://javascript.pages.academy/code-and-magick';
+  var TIMEOUT_IN_MS = 10000;
+  var URL = 'https://javascript.pages.academy/code-and-magick/data';
+  var URL_UP = 'https://javascript.pages.academy/code-and-magick';
 
   var userDialog = document.querySelector('.setup');
-  var similarListElement = userDialog.querySelector('.setup-similar-list');
   var form = userDialog.querySelector('.setup-wizard-form');
-  window.StatusCode = {
+  var StatusCode = {
     OK: 200
   };
 
@@ -19,7 +17,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === window.StatusCode.OK) {
+        if (xhr.status === StatusCode.OK) {
           onLoad(xhr.response);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -32,9 +30,9 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
-      xhr.timeout = window.TIMEOUT_IN_MS;
+      xhr.timeout = TIMEOUT_IN_MS;
 
-      xhr.open('GET', window.URL);
+      xhr.open('GET', URL);
       xhr.send();
     },
     save: function (data, onLoad, onError) {
@@ -42,27 +40,61 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === window.StatusCode.OK) {
+        if (xhr.status === StatusCode.OK) {
           onLoad(xhr.response);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
 
-      xhr.open('POST', window.URL_UP);
+      xhr.open('POST', URL_UP);
       xhr.send(data);
     }
   };
 
-  var successHandler = function (wizards) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < MAX_SIMILAR_WIZARD_COUNT; i++) {
-      var randomWiz = window.getRandomElement(wizards);
-      fragment.appendChild(window.renderWizard(randomWiz));
+  var coatColor = 'rgb(101, 137, 164)';
+  var eyesColor = 'black';
+  var wizards = [];
+
+  var getRank = function (wizard) {
+    var rank = 0;
+
+    if (wizard.colorCoat === coatColor) {
+      rank += 2;
     }
-    similarListElement.appendChild(fragment);
-    userDialog.querySelector('.setup-similar').classList.remove('hidden');
+    if (wizard.colorEyes === eyesColor) {
+      rank += 1;
+    }
+
+    return rank;
   };
+
+  window.wizard.onEyesChange = window.debounce(function (color) {
+    eyesColor = color;
+    updateWizards();
+  });
+
+  window.wizard.onCoatChange = window.debounce(function (color) {
+    coatColor = color;
+    updateWizards();
+  });
+
+  var successHandler = function (data) {
+    wizards = data;
+    updateWizards();
+  };
+
+  var updateWizards = function () {
+    window.render(wizards.slice().
+      sort(function (left, right) {
+        var rankDiff = getRank(right) - getRank(left);
+        if (rankDiff === 0) {
+          rankDiff = wizards.indexOf(left) - wizards.indexOf(right);
+        }
+        return rankDiff;
+      }));
+  };
+
 
   var errorHandler = function (errorMessage) {
     var node = document.createElement('div');
